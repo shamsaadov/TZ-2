@@ -1,16 +1,32 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IProfile } from "../../interfaces/profile.interface";
 import { authLogin } from "../../constants/loginPassword";
 import { authPassword } from "../../constants/loginPassword";
 import { IAuthInterface } from "../../interfaces/auth.interface";
 import { AuthContext } from "../../context/Auth.context";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
-function App() {
+const StyledInput = styled.input`
+  width: 500px;
+  border-radius: 15px;
+`;
+const StyledLabel = styled.label`
+
+`
+const Button = styled.button`
+  background: #f5f5f5;
+  border-radius: 3px;
+  border: 8px;
+  color: black;
+`;
+
+const Login = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const { setAuthState } = useContext<IAuthInterface>(AuthContext);
+  const { auth, setAuthState } = useContext<IAuthInterface>(AuthContext);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const {
@@ -28,21 +44,32 @@ function App() {
   };
 
   const onSubmit = handleSubmit((data) => {
-    console.log(login, password);
-    if (authLogin === data.login || authPassword === data.password) {
+    if (authLogin === data.login && authPassword === data.password) {
       setAuthState(true);
-      history.push('/profile')
+      setLoading(true);
     } else {
-      alert('error')
+      return <div className="error">Введите логин</div>;
     }
   });
+
+  useEffect(() => {
+    if (auth) {
+      let timer = setTimeout(() => {
+        history.push("/profile");
+      }, 3000);
+      return () => {
+        setLoading(false);
+        clearTimeout(timer);
+      };
+    }
+  }, [auth]);
 
   return (
     <main>
       <form onSubmit={onSubmit}>
         <div>
-          <label htmlFor="login">Логин</label>
-          <input
+          <StyledLabel htmlFor="login">Логин</StyledLabel>
+          <StyledInput
             {...register("login", { required: true, maxLength: 30 })}
             id="login"
             type="text"
@@ -52,8 +79,8 @@ function App() {
           {errors.login && <div className="error">Введите логин</div>}
         </div>
         <div>
-          <label htmlFor="password">Пароль</label>
-          <input
+          <StyledLabel htmlFor="password">Пароль</StyledLabel>
+          <StyledInput
             {...register("password", { required: true, maxLength: 30 })}
             id="password"
             type="password"
@@ -62,10 +89,12 @@ function App() {
           />
           {errors.password && <div className="error">Введите пароль</div>}
         </div>
-        <button type="submit">Войти</button>
+        <Button disabled={loading} type="submit">
+          Войти
+        </Button>
       </form>
     </main>
   );
-}
+};
 
-export default App;
+export default Login;

@@ -371,11 +371,6 @@ a {
   text-decoration: none;
   background-color: rgba(0, 0, 0, 0);
 }
-a:focus,
-a:hover {
-  color: #0062cc;
-  text-decoration: underline;
-}
 dl {
   margin-bottom: 16px;
 }
@@ -634,14 +629,6 @@ input[type="button"]::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner,
 input[type="submit"]::-moz-focus-inner {
   padding: 0;
-}
-button:hover,
-input[type="button"]:hover,
-input[type="reset"]:hover,
-input[type="submit"]:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
-  color: #fff;
 }
 button:not(:disabled):active,
 input[type="button"]:not(:disabled):active,
